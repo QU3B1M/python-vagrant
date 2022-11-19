@@ -1,7 +1,5 @@
 from pydantic import BaseModel, IPvAnyAddress, PositiveInt
-
-from utils import is_valid_ipv4
-
+# Solo tengo que agregar y parsear la parte de la lista de las maquinas, el vagranfile no necesita nada
 
 class VagrantMachine(BaseModel):
 
@@ -20,8 +18,9 @@ class VagrantFile:
     def add_machine(self, name: str, os: str, ram: int, cpu: int, ip: str, port: int):
         pass
 
-    def write_vagrantfile(self):
-        pass
+    def _write_vagrantfile(self):
+        with open('Vagrantfile', 'w') as f:
+            f.write('')
 
     def _set_ip(self):
         pass
