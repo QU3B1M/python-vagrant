@@ -1,4 +1,4 @@
-from pydantic import BaseModel, IPvAnyAddress, PositiveInt
+from pydantic import BaseModel, IPvAnyAddress, PositiveInt, DirectoryPath
 # Solo tengo que agregar y parsear la parte de la lista de las maquinas, el vagranfile no necesita nada
 
 class VagrantMachine(BaseModel):
@@ -6,6 +6,7 @@ class VagrantMachine(BaseModel):
     ip: IPvAnyAddress
     name: str
     os: str
+    shared_folder: DirectoryPath = '.'
     ram: PositiveInt = 1024
     cpu: PositiveInt = 1
     port: PositiveInt
