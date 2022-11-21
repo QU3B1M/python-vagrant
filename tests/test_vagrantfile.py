@@ -1,6 +1,6 @@
 import pytest
 
-from src.vagrant.vagrantfile import VMsDefiner, VagrantMachine
+from src.vagrant.machines import VMsDefiner, VagrantMachine
 
 
 @pytest.fixture

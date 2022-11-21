@@ -1,24 +1,13 @@
 import json
 import os
 from pathlib import Path
-from pydantic import BaseModel, IPvAnyAddress, PositiveInt, DirectoryPath
-from pydantic import validate_arguments
 
-
-class VagrantMachine(BaseModel):
-
-    name: str
-    os: str
-    ip: str
-    port: PositiveInt
-    shared_folder: str = '.'
-    ram: PositiveInt = 1024
-    cpu: PositiveInt = 1
+from .vm_model import VagrantMachine
 
 
 class VMsDefiner:
 
-    config_file = f'{Path(__file__).resolve().parent}/machines.config.json'
+    config_file = f'{Path(__file__).parents[1]}/vagrantfile/vms.config.json'
 
     @classmethod
     def add_machine(cls, new_vm: VagrantMachine) -> None:

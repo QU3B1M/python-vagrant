@@ -4,7 +4,7 @@
 require 'json'
 
 # default constants
-MACHINES_FILE = 'machines.config.json'
+MACHINES_FILE = 'vms.config.json'
 
 file = File.open MACHINES_FILE
 machines = JSON.load file
