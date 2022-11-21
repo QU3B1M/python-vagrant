@@ -1,33 +1,61 @@
+import json
+import os
+from pathlib import Path
 from pydantic import BaseModel, IPvAnyAddress, PositiveInt, DirectoryPath
-# Solo tengo que agregar y parsear la parte de la lista de las maquinas, el vagranfile no necesita nada
+from pydantic import validate_arguments
+
 
 class VagrantMachine(BaseModel):
 
-    ip: IPvAnyAddress
     name: str
     os: str
-    shared_folder: DirectoryPath = '.'
+    ip: str
+    port: PositiveInt
+    shared_folder: str = '.'
     ram: PositiveInt = 1024
     cpu: PositiveInt = 1
-    port: PositiveInt
 
 
-class VagrantFile:
-    def __init__(self) -> None:
-        pass
+class VMsDefiner:
 
-    def add_machine(self, name: str, os: str, ram: int, cpu: int, ip: str, port: int):
-        pass
+    config_file = f'{Path(__file__).resolve().parent}/machines.config.json'
 
-    def _write_vagrantfile(self):
-        with open('Vagrantfile', 'w') as f:
-            f.write('')
+    @classmethod
+    def add_machine(cls, new_vm: VagrantMachine) -> None:
+        if not isinstance(new_vm, VagrantMachine):
+            new_vm = VagrantMachine(**new_vm)
+        vms_list = cls.get_defined_machines()
 
-    def _set_ip(self):
-        pass
+        if cls._value_is_in_use(vms_list, 'name', new_vm.name):
+            raise ValueError(f'VM name {new_vm.name} already in use.')
+        if cls._value_is_in_use(vms_list, 'ip', new_vm.ip):
+            raise ValueError(f'VM IP {new_vm.ip} already in use.')
+        if cls._value_is_in_use(vms_list, 'port', new_vm.port):
+            raise ValueError(f'VM binded port {new_vm.port} already in use.')
 
-    def _set_port(self):
-        pass
+        vms_list.append(new_vm)
+        cls._save_machines(vms_list)
 
-    def _generate_name(self):
-        pass
+    @classmethod
+    def get_defined_machines(cls) -> list[VagrantMachine]:
+        if os.stat(cls.config_file).st_size == 0:
+            return []
+        with open(cls.config_file) as f:
+            machines = json.load(f)
+        return [VagrantMachine(**machine) for machine in machines]
+
+    @classmethod
+    def delete_machine(cls, name: str) -> None:
+        vms_list = cls.get_defined_machines()
+        vms_list = [vm for vm in vms_list if vm.name != name]
+        cls._save_machines(vms_list)
+
+    @classmethod
+    def _save_machines(cls, machines: list[VagrantMachine]) -> None:
+        dict_machines = [machine.dict() for machine in machines]
+        with open(cls.config_file, 'w') as f:
+            f.write(json.dumps(dict_machines))
+
+    @classmethod
+    def _value_is_in_use(cls, list, key, value):
+        return bool([i for i in list if getattr(i, key) == value])
