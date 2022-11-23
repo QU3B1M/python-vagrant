@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 
-from .vm_model import VagrantMachine
+from .model import VagrantMachine
 
 
 class VMsDefiner:

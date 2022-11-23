@@ -1,8 +1,10 @@
-import ipaddress
+from pydantic import IPvAnyAddress
+from pydantic.errors import IPvAnyAddressError
 
-def is_valid_ipv4(ip: str) -> bool:
+
+def is_valid_ip(ip: str) -> bool:
     try:
-        ipaddress.ip_address(ip)
+        IPvAnyAddress.validate(ip)
         return True
-    except TypeError:
+    except IPvAnyAddressError:
         return False

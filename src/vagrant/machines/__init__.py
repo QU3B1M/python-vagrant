@@ -1,2 +1,2 @@
-from .vms_definer import VMsDefiner
-from .vm_model import VagrantMachine
+from .definer import VMsDefiner
+from .model import VagrantMachine

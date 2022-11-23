@@ -15,7 +15,7 @@ Vagrant.configure(2) do |config|
         config.vm.define machine["name"] do |node|
             node.vm.hostname = machine["name"]
             node.vm.box = machine["os"]
-            node.vm.network "forwarded_port", guest: 2000, host: machine[2020],
+            node.vm.network "forwarded_port", guest: 2000, host: machine['port'],
             node.vm.network 'private_network', ip: machine["ip"]
             node.vm.synced_folder machine["shared_folder"], '/vagrant', disabled: true
             node.vm.provider 'virtualbox' do |vb|
