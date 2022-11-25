@@ -8,6 +8,7 @@ from .cases.vms_definition import machines, invalid_machines
 
 @pytest.mark.parametrize("machine", machines)
 def test_add_new_machine_valid(machine, restore_definition_file):
+    """Check the addition of valid machines to the definitions file."""
     machine = VagrantMachine(**machine)
     VMsDefiner.add_machine(machine)
     machines_list = VMsDefiner.get_defined_machines()
@@ -16,6 +17,7 @@ def test_add_new_machine_valid(machine, restore_definition_file):
 
 @pytest.mark.parametrize("machine", invalid_machines)
 def test_add_new_machine_invalid(machine, restore_definition_file):
+    """Check the addition of invalid machines to the definitions file."""
     with pytest.raises(ValidationError):
         machine = VagrantMachine(**machine)
         VMsDefiner.add_machine(machine)
