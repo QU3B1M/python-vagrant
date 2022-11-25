@@ -1,0 +1,27 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'json'
+
+# default constants
+MACHINES_FILE = 'vms.config.json'
+
+file = File.open MACHINES_FILE
+machines = JSON.load file
+file.close
+
+Vagrant.configure(2) do |config|
+    machines.each do |machine|
+        config.vm.define machine["name"] do |node|
+            node.vm.hostname = machine["name"]
+            node.vm.box = machine["os"]
+            node.vm.network "forwarded_port", guest: 2000, host: machine['port'],
+            node.vm.network 'private_network', ip: machine["ip"]
+            node.vm.synced_folder machine["shared_folder"], '/vagrant', disabled: true
+            node.vm.provider 'virtualbox' do |vb|
+                vb.customize ['modifyvm', :id, '--memory', machine["ram"]]
+                vb.customize ['modifyvm', :id, '--cpus', machine["cpu"]]
+            end
+        end
+    end
+end

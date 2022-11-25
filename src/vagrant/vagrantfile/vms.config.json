@@ -1,0 +1,1 @@
+[{"name": "tes2", "os": "ubuntu/trusty64", "ip": "192.168.56.1", "shared_folder": ".", "port": 2001, "ram": 1024, "cpu": 1}]
